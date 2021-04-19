@@ -1,0 +1,97 @@
+{% extends '../base.html' %}
+
+<!-- title block -->
+{% block title %}All Post{% endblock title %}
+<!-- title block end-->
+
+<!-- css block -->
+{% block css %}
+<style>
+    .post {
+        background-color: #f3f4ed;
+        padding: 20px;
+        border-radius: 15px;
+        position: relative;
+    }
+
+    .image {
+        width: 100%;
+        height: 200px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    div h6 {
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+
+    a small {
+        color: red;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+    }
+
+    small {
+        color: red;
+        position: absolute;
+        bottom: 0;
+    }
+</style>
+{% endblock css %}
+<!-- css block end-->
+
+<!-- content block -->
+{% block content %}
+
+<div class="container mt-3">
+    <h1 class="d-inline">Author: </h1>
+    <select class="px-4 py-2" onchange="if (this.value) window.location.href=this.value">
+        <option value="author=All">All</option>
+        {% for author in author_list %}
+        {% if author == selected_author %}
+        <option value="author={{author}} " selected>{{author}}</option>
+        {% else %}
+        <option value="author={{author}} ">{{author}}</option>
+        {% endif %}
+        {% endfor %}
+    </select>
+</div>
+
+
+<div class="container mt-3">
+    {% if fpost %}
+    {% for post in fpost %}
+    {% if post.published_date %}
+    <div class="container mt-3 post">
+        <div class="row">
+            <div class="col-md-5">
+                <section class="image" style="background-image: url({{post.image.url}});"></section>
+            </div>
+            <div class="col-md-5 post">
+                <h3>{{post.title}}</h3>
+                <h6>{{post.text | slice:":50"}}......</h6>
+                <a href="{% url 'post:fullPost' post.pk post.slug %}"><small><b>...Read More</b></small></a>
+                <hr>
+                <small>
+                    {{post.created_date}} <b>By</b> {{post.author}}
+                </small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% else %}
+    <h1 class="text-center bg-danger p-5">No Post</h1>
+    {% endif %}
+</div>
+{% endblock content %}
+<!-- content block end -->
+
+<!-- js block -->
+{% block js %}
+
+{% endblock js %}
+<!-- js block end-->

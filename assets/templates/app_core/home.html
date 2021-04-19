@@ -1,0 +1,81 @@
+{% extends '../base.html' %}
+
+{% block title %}WELCOME {% if user.is_authenticated %}{{user.username | title}}{% else %}TO
+BLOG{% endif %}{% endblock title %}
+
+{% block css %}
+<style>
+    .img1 {
+        background-image: url(https://wallpaperaccess.com/full/1451623.jpg);
+    }
+
+    /* Image for mobile view */
+    @media only screen and (max-width: 600px) {
+        .img1 {
+            background-image: url(https://i.pinimg.com/564x/f3/76/a5/f376a5c2b2e72d187a74222999908c86.jpg);
+        }
+    }
+
+    .img2 {
+        background-image: url(https://wallpaper-house.com/data/out/9/wallpaper2you_358950.jpg);
+    }
+
+    /* Image for mobile view */
+    @media only screen and (max-width: 600px) {
+        .img2 {
+            background-image: url(https://viveconstyle.com/wp-content/uploads/2019/11/make-it-count-mobile-wallpaper.jpg);
+        }
+    }
+
+    .img3 {
+        background-image: url(https://images6.alphacoders.com/481/thumb-1920-481965.jpg);
+    }
+
+    /* Image for mobile view */
+    @media only screen and (max-width: 600px) {
+        .img3 {
+            background-image: url(https://i.pinimg.com/474x/ed/47/69/ed476924223a7452def10fd81416d00e.jpg);
+        }
+    }
+
+    .img {
+        width: 100vw;
+        height: 100vh;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+    }
+</style>
+{% endblock css %}
+
+{% block content %}
+<div>
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="img img1"></div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="img img2"></div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="img img3"></div>
+            </div>
+
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+            data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,127 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}" />
+
+
+    <!-- Bootstrap CSS -->
+    {% block base_css %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/FA5.15.3.css' %}">
+    {% endblock base_css %}
+    <link href="{% static 'css/my.css' %}" rel="stylesheet">
+
+    {% block css %}
+    {% endblock css %}
+
+    <title>{% block title %} {% endblock title %}</title>
+</head>
+
+<body>
+    <div id="loader-wrapper" class="">
+        <div id="loader"></div>
+        <div class="loader-section section-left"></div>
+        <div class="loader-section section-right"></div>
+    </div>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">My Blog</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post:viewPost' %}">All Post</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            My Account
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            {% if user.is_authenticated %}
+                            <li><a class="dropdown-item" href="{% url 'post:createPost' %}">Create Post</a></li>
+                            <li><a class="dropdown-item" href="{% url 'post:my_post' %}">My Post</a></li>
+                            <li><a class="dropdown-item" href="{% url 'user:logout' %}">Log-Out</a></li>
+                            {% else %}
+                            <li><a class="dropdown-item" href="{% url 'user:userRegistration' %}">Register</a></li>
+                            <li><a class="dropdown-item" href="{% url 'user:login' %}"><span>Login</span></a></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Welcome
+                            {{user.username}}</a>
+                    </li>
+                </ul>
+                <form class="d-flex">
+                    <!-- Right -->
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid" style="padding: 1.5rem;"></div>
+    <!-- END NAVBAR -->
+    {% block content %}
+
+    {% endblock content %}
+    <!-- Footer -->
+    <!-- Site footer -->
+    <footer class="site-footer">
+
+        <div class="container">
+            <div class="row">
+                <div class="col-md-8 col-sm-6 col-xs-12">
+                    <p class="copyright-text">Copyright &copy; 2025 All Rights Reserved by
+                        <a href="#">Self</a>.
+                    </p>
+                </div>
+
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                    <ul class="social-icons">
+                        <li><a class="facebook" href="#"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a class="twitter" href="#"><i class="fab fa-twitter"></i></a></li>
+                        <li><a class="dribbble" href="#"><i class="fab fa-dribbble"></i></a></li>
+                        <li><a class="linkedin" href="#"><i class="fab fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Footer End -->
+    <!-- Optional JavaScript; choose one of the two! -->
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="{% static 'js/jquery-3.6.0.js' %}"></script>
+    {% block base_js %}
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        $(window).on('load', function(){
+            $('#loader-wrapper, #loader').remove()
+        });
+    </script>
+    {% endblock base_js %}
+
+    {% block js %}
+    {% endblock js %}
+    
+    <!-- Option 2: Separate Popper and Bootstrap JS -->
+    <!--
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js" integrity="sha384-SR1sx49pcuLnqZUnnPwx6FCym0wLsk5JZuNx2bPPENzswTNFaQU1RDvt3wT4gWFG" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.min.js" integrity="sha384-j0CNLUeiqtyaRmlzUHCPZ+Gy5fQu0dQ6eZ/xAww941Ai1SxSY+0EQqNXNE6DZiVc" crossorigin="anonymous"></script>
+    -->
+</body>
+
+</html>

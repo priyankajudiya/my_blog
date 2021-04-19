@@ -1,0 +1,128 @@
+{% extends '../base.html' %}
+
+<!-- title block -->
+{% block title %}All Draft{% endblock title %}
+<!-- title block end-->
+
+<!-- css block -->
+{% block css %}
+<style>
+    .post {
+        background-color: #f3f4ed;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-radius: 15px;
+        position: relative;
+    }
+
+    .image {
+        width: 100%;
+    }
+
+    div h6 {
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+
+    a small {
+        color: red;
+        position: absolute;
+        right: 20px;
+        bottom: -35px;
+    }
+
+    small {
+        color: red;
+        position: absolute;
+        bottom: 0;
+    }
+
+    .image {
+        width: 100%;
+        height: 200px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+</style>
+{% endblock css %}
+<!-- css block end-->
+
+<!-- content block -->
+{% block content %}
+<div class="container mt-3">
+    {% if is_published == 'not' %}
+    <h3>Drafted Post</h3>
+    {% elif is_published == 'yes' %}
+    <h3>Published Post</h3>
+    {% else %}
+    <h3>All</h3>
+    {% endif %}
+    <nav class="navbar navbar-expand navbar-light bg-light">
+        <div class="container-fluid">
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'post:my_post' %}">All</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post:all_publish_post' %}">Published</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post:all_not_publish_post' %}">Not Published</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 ">
+        {% if objects %}
+            {% for post in objects %}
+            <div class="container my-3 post">
+                <div class="row">
+                    <div class="col-md-5">
+                        <section class="image" style="background-image: url({{post.image.url}});"></section>
+                    </div>
+                    <div class="col-md-5 post">
+                        <h3>{{post.title}}</h3>
+                        <h6>{{post.text | slice:":50"}}......</h6>
+                        <a href="{% url 'post:fullPost' post.pk post.slug %}" class="mt-3">
+                            <small class="inline-block"><b>...Read More</b></small>
+                        </a>
+                        <hr>
+                        <small>
+                            {{post.created_date}} 
+                            <span>
+                                {% if post.published_date %}
+                                <b style="color: green;">Published</b>
+                                {% else %}
+                                <b>Drafted</b>
+                                {% endif %}
+                            </span>
+                            <b>By</b> {{post.author}}
+                        </small>
+                        <a href="{% url 'post:publish_post' post.pk post.slug %}">
+                            {% if post.published_date %}
+                            Click to Draft This Post
+                            {% else %}
+                            Click to Publish This Post
+                            {% endif%}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <h1>No POst</h1>
+        {% endif %}
+    </div>
+</div>
+{% endblock content %}
+<!-- content block end -->
+
+<!-- js block -->
+{% block js %}
+
+{% endblock js %}
+<!-- js block end-->

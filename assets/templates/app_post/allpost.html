@@ -1,0 +1,96 @@
+{% extends '../base.html' %}
+
+<!-- title block -->
+{% block title %}All Post{% endblock title %}
+<!-- title block end-->
+
+<!-- css block -->
+{% block css %}
+<style>
+    .post {
+        background-color: #f3f4ed;
+        padding: 20px;
+        border-radius: 15px;
+        position: relative;
+    }
+
+    .image {
+        width: 100%;
+        height: 200px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    div h6 {
+        margin-left: 20px;
+        margin-top: 20px;
+    }
+
+    a small {
+        color: red;
+        position: absolute;
+        right: 0;
+        bottom: 0;
+    }
+
+    small {
+        color: red;
+        position: absolute;
+        bottom: 0;
+    }
+</style>
+{% endblock css %}
+<!-- css block end-->
+
+<!-- content block -->
+{% block content %}
+
+<div class="container mt-3">
+    <h1 class="d-inline">Author: </h1>
+    <select class="px-4 py-2" name="filter" onchange="if (this.value) window.location.href=this.value">
+        <option value="">All</option>
+        {% for author in author_list %}
+        <option value="author={{author}}">{{author}}</option>
+        {% endfor %}
+    </select>
+</div>
+
+<div class="container mt-3">
+    {% for post in posts %}
+    {% if post.published_date %}
+    <div class="container my-3 post">
+        <div class="row">
+            <div class="col-md-5">
+                <section class="image" style="background-image: url({{post.image.url}});"></section>
+            </div>
+            <div class="col-md-5 post">
+                <h3>{{post.title}}</h3>
+                <h6>{{post.text | slice:":50"}}......</h6>
+                <a href="{% url 'post:fullPost' post.pk post.slug %}"><small><b>...Read More</b></small></a>
+                <hr>
+                <small>{{post.created_date}} <b>By</b> {{post.author}} </small>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+</div>
+{% endblock content %}
+<!-- content block end -->
+
+<!-- js block -->
+{% block js %}
+<script>
+    $(document).ready(function () {
+        // $('.post').hover(function () {
+        //     $(this).css("cursor", "pointer");
+        //     $(this).click(function () {
+        //         var html = $(this).html()
+        //         console.log(html)
+        //     });
+        // });
+    });
+</script>
+{% endblock js %}
+<!-- js block end-->

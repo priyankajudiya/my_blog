@@ -1,0 +1,227 @@
+{% extends '../base.html' %}
+{% load static %}
+<!-- title block -->
+{% block title %}Create Post{% endblock title %}
+<!-- title block end-->
+
+<!-- css block -->
+{% block css %}
+<style>
+
+    .avatar-upload {
+        position: relative;
+        /* max-width: 205px; */
+        margin: 10px auto;
+    }
+
+    .avatar-upload .avatar-edit {
+        position: absolute;
+        right: 12px;
+        z-index: 1;
+        top: 10px;
+    }
+
+    .avatar-upload .avatar-edit input {
+        display: none;
+    }
+
+    .avatar-upload .avatar-edit input+label {
+        display: inline-block;
+        width: 34px;
+        height: 34px;
+        margin-bottom: 0;
+        border-radius: 100%;
+        background: #FFFFFF;
+        border: 1px solid transparent;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.12);
+        cursor: pointer;
+        font-weight: normal;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .avatar-upload .avatar-edit input+label:hover {
+        background: #f1f1f1;
+        border-color: #d6d6d6;
+    }
+
+    .avatar-upload .avatar-edit input+label:after {
+        content: "\f03e";
+        font-family: 'Font Awesome 5 Free';
+        color: #757575;
+        position: absolute;
+        top: 8px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        margin: auto;
+    }
+
+    .avatar-upload .avatar-preview {
+        /* width: 192px; */
+        height: 350px;
+        position: relative;
+        border: 6px solid #F8F8F8;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+    }
+
+    .avatar-upload .avatar-preview>div {
+        width: 100%;
+        height: 100%;
+        border-radius: 5%;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    /* ############################ */
+    .word {
+        margin-bottom: 10px;
+        float: right;
+    }
+
+    .word i {
+        color: red;
+        font-weight: bolder;
+    }
+
+    #id_author {
+        text-transform: capitalize;
+        margin: 10px;
+        width: 150px;
+        padding: 5px;
+        border: 2px solid black;
+    }
+
+    #id_author option {
+        text-transform: capitalize;
+    }
+
+    .box {
+        border-radius: 15px;
+        box-shadow: 0 19px 38px rgba(0, 0, 0, 0.30), 0 15px 12px rgba(0, 0, 0, 0.22);
+        padding: 15px;
+        margin: auto;
+        margin-bottom: 10px;
+    }
+</style>
+
+{% endblock css %}
+<!-- css block end-->
+
+<!-- content block -->
+{% block content %}
+<div class="container mt-5 ">
+    <div class="row">
+
+        <div class="box" style="width: 90%;">
+
+            <h1>{% if post %}Update Post{% else %}Create Post{% endif %}</h1>
+
+            <form action="" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- Image upload -->
+                <img src="" style="width: 100px;">
+
+                <div class="">
+                    <div class="avatar-upload">
+                        <div class="avatar-edit">
+                            <input type='file' id="imageUpload" accept=".png, .jpg, .jpeg" name="image">
+                            <label for="imageUpload"></label>
+                        </div>
+                        <div class="avatar-preview">
+                            {% if post.image.url %}
+                            <div id="imagePreview" style="background-image: url({{post.image.url}});"></div>
+                            {% else %}
+                            <div id="imagePreview" style="background-image: url('../../static/img/upload-img.jpg');"></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <!-- Image upload -->
+
+                <div class="form-group">
+                    <label for="id_title">Title <span class="require">*</span></label>
+                    <input type="text" maxlength="50" required id="id_title" class="form-control" name="title"
+                        value="{{post.title}}">
+                    <small id="titleCount" class="word">Remaining: <i>50</i> words</small>
+                </div>
+
+                <div class="form-group mt-3">
+                    <label for="id_text">Description</label>
+                    <textarea maxlength="500" required rows="5" id="id_text" class="form-control"
+                        name="text">{{post.text}}</textarea>
+                    <small id="descCount" class="word">Remaining: <i>500</i> words</small>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <input id="user" type="text" hidden value="{{user.username}}">
+                        <span><b>Author: {{user}}</b></span>
+                    </div>
+                </div>
+
+                <div class="form-group mt-3">
+                    <input style="float: right;" type="submit" value="{% if post %}Update{% else %}Create{% endif %}"
+                        class="btn btn-primary">
+                </div>
+
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+<!-- content block end -->
+
+<!-- js block -->
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#imagePreview').css('background-image', 'url(' + e.target.result + ')');
+                    $('#imagePreview').hide();
+                    $('#imagePreview').fadeIn(650);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
+
+        $("#imageUpload").change(function () {
+            readURL(this);
+        });
+
+        $('#imagePreview').click(function () {
+            $('#imageUpload').click()
+        });
+
+        // title count
+        var titleLength = Number($('#titleCount i').text())
+        $('#id_title').keyup(function () {
+            const count = $('#id_title').val()
+            $('#titleCount i').empty()
+            $('#titleCount i').append(titleLength - count.length)
+        });
+
+        // Desc count
+        var descLength = Number($('#descCount i').text())
+        $('#id_text').keyup(function () {
+            const desccount = $('#id_text').val()
+            $('#descCount i').empty()
+            $('#descCount i').append(descLength - desccount.length)
+        });
+
+        $('.avatar-upload').hover(function(){
+            $(this).css('cursor','pointer')
+        });
+
+        // #################################################################
+        
+    });
+</script>
+{% endblock js %}
+<!-- js block end-->

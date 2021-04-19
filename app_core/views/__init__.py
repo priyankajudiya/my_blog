@@ -1,0 +1,1 @@
+from app_core.views.index import index
