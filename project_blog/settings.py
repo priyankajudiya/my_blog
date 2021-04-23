@@ -154,3 +154,14 @@ SUBJECT = 'MyBlogWorld'
 HTML_MESSAGE_TEMPLATE = "verify_email/html_template.html"
 # VERIFICATION_SUCCESS_TEMPLATE = "verify_email/success.html"
 # VERIFICATION_FAILED_TEMPLATE = "verify_email/failed.html"
+
+###################################### messages tag
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'info',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}
