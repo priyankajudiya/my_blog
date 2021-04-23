@@ -8,7 +8,7 @@
 {% block css %}
 <style>
     .post {
-        background-color: #f3f4ed;
+        /* background-color: #f3f4ed; */
         padding: 20px;
         border-radius: 15px;
         position: relative;
@@ -39,6 +39,23 @@
         position: absolute;
         bottom: 0;
     }
+
+    .card {
+        background: #fff;
+        border-radius: 15px;
+        display: inline-block;
+        margin: 1rem;
+        position: relative;
+    }
+
+    .card-1 {
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        transition: all 0.3s cubic-bezier(.25, .8, .25, 1);
+    }
+
+    .card-1:hover {
+        box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    }
 </style>
 {% endblock css %}
 <!-- css block end-->
@@ -65,7 +82,7 @@
     {% if fpost %}
     {% for post in fpost %}
     {% if post.published_date %}
-    <div class="container mt-3 post">
+    <div class="container mt-3 card card-1 post" id="{{post.pk}}/{{post.slug}}">
         <div class="row">
             <div class="col-md-5">
                 <section class="image" style="background-image: url({{post.image.url}});"></section>
@@ -92,6 +109,17 @@
 
 <!-- js block -->
 {% block js %}
+<script>
+    $(document).ready(function () {
+        $('.post').hover(function () {
+            $(this).css("cursor", "pointer");
+            const id = this.id
+            $(this).click(function () {
+                window.location.href = '../fullPost/' + id
 
+            });
+        });
+    });
+</script>
 {% endblock js %}
 <!-- js block end-->

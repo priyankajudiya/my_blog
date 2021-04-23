@@ -33,8 +33,6 @@ class Post(models.Model):
         return reverse("post:my_post")
 
     def save(self, *args, **kwargs):
-        from app_post.views import authorName
-        self.author = User.objects.get(username = str(authorName))
         # Try is for delete old image if post update
         try:
             this = Post.objects.get(id=self.id)

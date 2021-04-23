@@ -317,9 +317,10 @@
             <!-- Login Form -->
             <form method="POST">
                 {% csrf_token %}
-                <input autocomplete="off" type="text" id="id_username" class="fadeIn second" name="username" placeholder="Username">
+                <input autocomplete="off" type="text" id="id_username" class="fadeIn second" name="username"
+                    placeholder="Username">
                 <div id="msg">
-                    <small  id="user_info"></small>
+                    <small id="user_info"></small>
                 </div>
                 <input type="text" id="id_email" class="fadeIn second" name="email" placeholder="Email">
                 <input type="text" id="id_password" class="fadeIn third" name="password" placeholder="Password">
@@ -336,38 +337,36 @@
 </div>
 {% endblock content %}
 
-{% block js %}
 <script>
-    $(document).ready(function () {
-        $("#id_username").keyup(function () {
-            const username = $(this).val();
-            $.ajax({
-                method: 'GET',
-                url: '{% url "user:userVldt" %}',
-                data: {'username':username},
-                success: function (data) {
-                    $('#user_info').empty();
-                    if (data == 'Availeble'){
-                        $('#msg').removeClass('bg-danger animate__fadeIn');
-                        $('#user_info').append('<span> '+data+'</span>');
-                        $('#msg').addClass('bg-success animate__bounceIn');
-                    }
-                    if (data == 'Not availeble'){
-                        $('#msg').removeClass('bg-success animate__bounceIn');
-                        $('#msg').addClass('bg-danger animate__fadeIn');
-                        $('#user_info').append('<span> '+data+'</span>');
-                    }
+    {% block js %}
+    $("#id_username").keyup(function () {
+        const username = $(this).val();
+        $.ajax({
+            method: 'GET',
+            url: '{% url "user:userVldt" %}',
+            data: { 'username': username },
+            success: function (data) {
+                $('#user_info').empty();
+                if (data == 'Availeble') {
+                    $('#msg').removeClass('bg-danger animate__fadeIn');
+                    $('#user_info').append('<span> ' + data + '</span>');
+                    $('#msg').addClass('bg-success animate__bounceIn');
                 }
-            });
-
-        });
-        $("#id_username").blur(function () {
-            const username = $(this).val();
-            if (username == ''){
-                $('#user_info').empty()
+                if (data == 'Not availeble') {
+                    $('#msg').removeClass('bg-success animate__bounceIn');
+                    $('#msg').addClass('bg-danger animate__fadeIn');
+                    $('#user_info').append('<span> ' + data + '</span>');
+                }
             }
-
         });
+
     });
-</script>
-{% endblock js %}
+
+    $("#id_username").blur(function () {
+        const username = $(this).val();
+        if (username == '') {
+            $('#user_info').empty()
+        }
+
+    })
+    {% endblock js %}

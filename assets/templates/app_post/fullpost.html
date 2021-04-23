@@ -3,6 +3,13 @@
 <!-- title block -->
 {% block title %}Post: {{post.title}}{% endblock title %}
 <!-- title block end-->
+<!-- SEO BLOCK -->
+{% block seo %}
+<meta name="keywords" content="{{post.title}}, priyank ajudiya, download, blog">
+<meta name="description" content="{{post.text | slice:':100'}}...">
+<meta name="author" content="{{post.author}}">
+{% endblock seo %}
+<!-- SEO BLOCK END-->
 
 <!-- css block -->
 {% block css %}
@@ -11,7 +18,20 @@
     img {
         width: 150px;
     }
-/* Loader */
+
+    #Comment {
+        padding: 10px;
+        margin-bottom: 10px;
+    }
+
+    #Comment .comments {
+        padding: 3px;
+        margin-bottom: 3px;
+        border-radius: 5px;
+        border: 1px solid black;
+    }
+
+    /* Loader */
     .lds-dual-ring.hidden {
         display: none;
     }
@@ -56,8 +76,8 @@
         opacity: 1;
         transition: all 0.5s;
     }
-/* Loader end */
 
+    /* Loader end */
 </style>
 {% endblock css %}
 <!-- css block end-->
@@ -69,11 +89,13 @@
     <div class="row">
         <div class="col-12 col-sm-8 col-md-6 col-lg-10 offset-lg-1">
             <h4 class="card-title" id="id_title">{{post.title}}</h4>
-            {% if user.is_authenticated and post.author_id == user.pk %}
-            <a href="{% url 'post:postUpdate' post.pk post.slug %}">Update</a>
-            <a href="{% url 'post:postDelete' post.pk post.slug %}">Delete</a>
-            {% endif %}
-
+            <div>
+                {% if user.is_authenticated and post.author_id == user.pk %}
+                <a id="update-post" class="btn btn-success"
+                    href="{% url 'post:postUpdate' post.pk post.slug %}">Update</a>
+                <a id="dlt-btn" class="btn btn-danger">Delete</a>
+                {% endif %}
+            </div>
             <div class="card">
                 <img class="card-img" src="{{post.image.url}}" alt="Vans">
                 <div class="card-img-overlay d-flex justify-content-end">
@@ -118,96 +140,114 @@
 
             <div id="Comment">
 
-            </div>
 
-            {% if post.comments.all %}
-            {% for comment in post.comments.all %}
 
-            <div class="comments">
-                <div class="card-body border">
-                    <h6 class="card-subtitle mb-2 text-muted ">{{comment.name}}</h6>
-                    <p class="card-text">{{comment.comment}}</p>
+                {% if post.comments.all %}
+                {% for comment in post.comments.all %}
+
+                <div class="comments">
+                    <div class="card-body ">
+                        <h6 class="card-subtitle mb-2 text-muted ">{{comment.name}}</h6>
+                        <p class="card-text">{{comment.comment}}</p>
+                    </div>
                 </div>
-            </div>
 
-            {% endfor %}
-            {% else %}
-            <h3 class="no_comments">No Comments</h3>
-            {% endif %}
+                {% endfor %}
+                {% else %}
+                <h3 class="no_comments">No Comments</h3>
+                {% endif %}
+            </div>
         </div>
     </div>
 </div>
+
 {% endblock content %}
 <!-- content block end -->
 
 <!-- js block -->
-{% block js %}
+
 <script type="text/javascript" src="../../../static/js/letteranimation.min.js"></script>
+
 <script>
-    $(document).ready(function () {
-        // alert(typeof(name.length))
 
-        $('#id_comment, #id_name, #id_email').keyup(function(){
-            var name = $('#id_name').val();
-            var comment = $('#id_comment').val();
-            var email = $('#id_email').val();
-
-            if(name.length > 0 && email.length > 0 && comment.length > 0){
-                $('#ajaxBtn, #submitxBtn').removeAttr('disabled')
+    {% block js %}
+    // Alert Redirect to Another Link
+    $(document).on('click', '#dlt-btn', function (e) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location = '{% url "post:postDelete" post.pk post.slug %}'
             }
-
-            if(name.length === 0 || email.length === 0 || comment.length === 0){
-                $('#ajaxBtn,#submitxBtn').attr('disabled','disabled')
-            }
-        });
-
-        $('#ajaxBtn').click(function () {
-            var name = $('#id_name').val();
-            var comment = $('#id_comment').val();
-            var email = $('#id_email').val();
-            $.ajax({
-                type: 'POST',
-                url: '../../addComment/{{post.pk}}',
-                data: {
-                    'name': name,
-                    'comment': comment,
-                    'email': email,
-                    'csrfmiddlewaretoken': '{{csrf_token}}',
-                    beforeSend: function() {
-                        $('#loader').removeClass('hidden')
-                    },
-                },
-                dataType: "text",
-
-                success: function (resultData) {
-                    $('#id_name, #id_email, #id_comment').val('');
-                    $('#ajaxBtn,#submitxBtn').attr('disabled','disabled');
-
-                    if (resultData == 'form not Saved'){
-                        alert('not saved')
-                    }else{
-                        if ($(".comments").length === 0) {
-                            $('.no_comments').remove();
-                        }
-
-                        if ($(".comments")) {
-                            $("#Comment").prepend('<div class="comments cssanimation blurIn bg-success"> <div class="card-body border"> <h6 class="card-subtitle mb-2 text-muted ">' + name + '</h6> <p class="card-text">' + comment + '</p> </div> </div>').slideDown();
-
-                            $('#Comment .comments').removeClass('bg-success')
-                        };
-                    }
-                },
-
-                complete: function(){
-
-                    setTimeout(function(){
-                        $('#loader').addClass('hidden');
-                    }, 1000);
-                },
-            });
-
-        });
+        })
     });
+    //////////////////////////////////////////
+
+    $('#id_comment, #id_name, #id_email').keyup(function () {
+        var name = $('#id_name').val();
+        var comment = $('#id_comment').val();
+        var email = $('#id_email').val();
+
+        if (name.length > 0 && email.length > 0 && comment.length > 0) {
+            $('#ajaxBtn, #submitxBtn').removeAttr('disabled')
+        }
+
+        if (name.length === 0 || email.length === 0 || comment.length === 0) {
+            $('#ajaxBtn,#submitxBtn').attr('disabled', 'disabled')
+        }
+    });
+
+    $('#ajaxBtn').click(function () {
+        var name = $('#id_name').val();
+        var comment = $('#id_comment').val();
+        var email = $('#id_email').val();
+        $.ajax({
+            type: 'POST',
+            url: '../../addComment/{{post.pk}}',
+            data: {
+                'name': name,
+                'comment': comment,
+                'email': email,
+                'csrfmiddlewaretoken': '{{csrf_token}}',
+                beforeSend: function () {
+                    $('#loader').removeClass('hidden')
+                },
+            },
+            dataType: "text",
+
+            success: function (resultData) {
+                $('#id_name, #id_email, #id_comment').val('');
+                $('#ajaxBtn,#submitxBtn').attr('disabled', 'disabled');
+
+                if (resultData == 'form not Saved') {
+                    alert('not saved')
+                } else {
+                    if ($(".comments").length === 0) {
+                        $('.no_comments').remove();
+                    }
+
+                    if ($(".comments")) {
+                        $("#Comment").prepend('<div class="comments cssanimation blurIn bg-success"> <div class="card-body border"> <h6 class="card-subtitle mb-2 text-muted ">' + name + '</h6> <p class="card-text">' + comment + '</p> </div> </div>').slideDown();
+
+                        $('#Comment .comments').removeClass('bg-success')
+                    };
+                }
+            },
+
+            complete: function () {
+
+                setTimeout(function () {
+                    $('#loader').addClass('hidden');
+                }, 1000);
+            },
+        });
+
+    });
+    {% endblock js %}
 </script>
-{% endblock js %}
-<!-- js block end-->

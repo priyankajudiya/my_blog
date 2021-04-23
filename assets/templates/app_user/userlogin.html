@@ -304,18 +304,20 @@
         <!-- Tabs Titles -->
 
         <!-- Icon -->
-        <div class="fadeIn first">
-            <img src="../media/app_user/reg.png" id="icon" alt="User Icon" />
+        <div class="fadeIn first mt-3">
+            <img src="../../media/app_user/reg.png" id="icon" alt="User Icon" />
         </div>
 
         <!-- Login Form -->
         <form method="POST" action="">
             {% csrf_token %}
-            <input type="text" id="id_username" class="fadeIn second" name="username" placeholder="Username" autocomplete="off">
+            <input type="text" id="id_username" class="fadeIn second" name="username" placeholder="Username"
+                autocomplete="off">
             <div class="container" id="user_info">
                 <small id="msg"></small>
             </div>
-            <input type="password" id="password" class="fadeIn third" name="password" placeholder="Password">
+            <input type="password" autocomplete="on" id="password" class="fadeIn third" name="password"
+                placeholder="Password">
             {% if request.GET.next %}
             <input type="hidden" name="next" value="{{request.GET.next}}">
             {% endif %}
@@ -331,10 +333,11 @@
 </div>
 {% endblock content %}
 
-{% block js %}
 <script>
-    $(document).ready(function () {
-        $("#id_username").blur(function () {
+
+{% block js %}
+
+        $("#id_username").keyup(function () {
             const username = $(this).val();
             if (username == '') {
                 $('#user_info').empty()
@@ -353,7 +356,6 @@
                     }
                 });
             }
-        });
-    });
+        })
+        {% endblock js %}
 </script>
-{% endblock js %}

@@ -1,23 +1,31 @@
-from django.http import HttpResponseRedirect
+from django.contrib import messages
+from django.http import HttpResponseRedirect, request
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.urls.base import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 from app_post import forms
+
+from django.dispatch import receiver
 
 from app_user import models
 # Create your views here.
 
 # Create Post
 
+
 class createPost(CreateView):
-    LOGIN_REDIRECT_URL = '/post/createPost'
     model = models.Post
     template_name = 'app_post/createpost.html'
-    fields = ['title', 'image', 'text']
+    fields = ['author','title', 'image', 'text']
+
+    def form_invalid(self, form):
+        return HttpResponse('Dont try to change HTML code')
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
 
     def dispatch(self, request):
-        global authorName
-        authorName = request.user
         return super().dispatch(request)
 
 
@@ -31,6 +39,7 @@ def author_list(model):
             author_list.append(post.author.username)
     return author_list
 
+
 class viewPost(ListView):
     model = models.Post
 
@@ -43,6 +52,7 @@ class viewPost(ListView):
         return render(request, 'app_post/allpost.html', context)
 
 # Filter Post
+
 
 def filterPost(request, author):
     model = models.Post
@@ -60,12 +70,14 @@ def filterPost(request, author):
 
 # Detail Post
 
+
 class fullPost(DetailView):
     model = models.Post
     template_name = 'app_post/fullpost.html'
     context_object_name = 'post'
 
 # Update Post
+
 
 class postUpdate(UpdateView):
     model = models.Post
@@ -74,8 +86,7 @@ class postUpdate(UpdateView):
     context_object_name = 'post'
 
     def dispatch(self, request, *args, **kwargs):
-        global authorName
-        authorName = request.user
+        
         obj = self.get_object()
         if obj.author != self.request.user:
             return HttpResponse('Not Authorized to update other post')
@@ -83,19 +94,26 @@ class postUpdate(UpdateView):
 
 # Delete Post
 
+
 class postDelete(DeleteView):
     model = models.Post
-    template_name = 'app_post/post_confirm_delete.html'
+    # template_name = 'app_post/post_confirm_delete.html'
     context_object_name = 'post'
     success_url = reverse_lazy('post:my_post')
 
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)
+
     def dispatch(self, request, *args, **kwargs):
         obj = self.get_object()
+        messages.add_message(request, messages.SUCCESS, 'Post Deleted')
+
         if obj.author != self.request.user:
             return HttpResponse('Not authorized to delete this posts')
         return super(postDelete, self).dispatch(request, *args, **kwargs)
 
 # User All Post
+
 
 class my_post(ListView):
     model = models.Post
@@ -111,6 +129,7 @@ class my_post(ListView):
 
 # Not Published User All Post
 
+
 def notPublishd(request):
     author = None
     if request.user.is_authenticated:
@@ -124,6 +143,7 @@ def notPublishd(request):
     return render(request, 'app_post/my_post.html', context)
 
 # Published User All Post
+
 
 def Publishd(request):
     author = None
@@ -139,9 +159,11 @@ def Publishd(request):
 
 # Publish or Drafts Post
 
+
 def publish_post(request, pk, slug):
     model = models.Post
     post = model.objects.get(pk=pk)
+    
 
     if 'next' in request.POST:
         redirect(request.POST.get('next'))

@@ -37,9 +37,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # ========================================== Installed App
+    'verify_email',
+    # ========================================== Created App
     'app_core',
     'app_user',
     'app_post',
+    
 ]
 
 MIDDLEWARE = [
@@ -139,7 +143,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = '*****************'
-EMAIL_HOST_PASSWORD = '**************'
+
+# EMAIL_HOST_USER = '*****************'
+# EMAIL_HOST_PASSWORD = '**************'
+
+EMAIL_HOST_USER = 'pilu.djangotest@gmail.com'
+EMAIL_HOST_PASSWORD = 'pilu@django'
 ##################################################################
-LOGIN_URL = '/user/login'
+LOGIN_URL = 'user:login'
+############################## Email Verify Template
+SUBJECT = 'MyBlogWorld'
+HTML_MESSAGE_TEMPLATE = "verify_email/html_template.html"
+# VERIFICATION_SUCCESS_TEMPLATE = "verify_email/success.html"
+# VERIFICATION_FAILED_TEMPLATE = "verify_email/failed.html"
