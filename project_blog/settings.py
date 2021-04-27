@@ -145,11 +145,14 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 
-# EMAIL_HOST_USER = '*****************'
-# EMAIL_HOST_PASSWORD = '**************'
+# EMAIL_HOST_USER = '*****************' # gmail email id to send email 
+# EMAIL_HOST_PASSWORD = '**************' # gmail password
 
+<<<<<<< HEAD
 EMAIL_HOST_USER = 'pilu.djangotest@gmail.com'
 EMAIL_HOST_PASSWORD = 'pilu@Django#'
+=======
+>>>>>>> 246b3d2844bcbf61b0116d5b4f164d572e59e606
 ##################################################################
 LOGIN_URL = 'user:login'
 ############################## Email Verify Template
@@ -167,4 +170,8 @@ MESSAGE_TAGS = {
     messages.SUCCESS: 'success',
     messages.WARNING: 'warning',
     messages.ERROR: 'danger',
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 246b3d2844bcbf61b0116d5b4f164d572e59e606
