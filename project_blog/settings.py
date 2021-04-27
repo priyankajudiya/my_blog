@@ -131,6 +131,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+# STATIC_ROOT = BASE_DIR/'assets/static/'
 
 STATIC_DIR = BASE_DIR / 'assets/static'
 STATICFILES_DIRS = [STATIC_DIR,]
@@ -148,7 +149,7 @@ EMAIL_PORT = 587
 # EMAIL_HOST_PASSWORD = '**************'
 
 EMAIL_HOST_USER = 'pilu.djangotest@gmail.com'
-EMAIL_HOST_PASSWORD = 'pilu@django'
+EMAIL_HOST_PASSWORD = 'pilu@Django#'
 ##################################################################
 LOGIN_URL = 'user:login'
 ############################## Email Verify Template
@@ -156,3 +157,14 @@ SUBJECT = 'MyBlogWorld'
 HTML_MESSAGE_TEMPLATE = "verify_email/html_template.html"
 # VERIFICATION_SUCCESS_TEMPLATE = "verify_email/success.html"
 # VERIFICATION_FAILED_TEMPLATE = "verify_email/failed.html"
+
+###################################### messages tag
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'info',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.WARNING: 'warning',
+    messages.ERROR: 'danger',
+}

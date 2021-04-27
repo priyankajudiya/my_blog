@@ -1,4 +1,5 @@
 {% extends '../base.html' %}
+{% load static %}
 
 <!-- title block -->
 {% block title %}Post: {{post.title}}{% endblock title %}
@@ -97,7 +98,12 @@
                 {% endif %}
             </div>
             <div class="card">
-                <img class="card-img" src="{{post.image.url}}" alt="Vans">
+            {% if post.image or post.img_URL %}
+                <img class="card-img" src="{{post.imageURL|default_if_none:post.img_URL}}" alt="Vans">
+            {% else %}
+                <img class="card-img" src="{% static 'img/No_image_available.png' %}" alt="Vans">
+            {% endif %}
+
                 <div class="card-img-overlay d-flex justify-content-end">
 
                 </div>

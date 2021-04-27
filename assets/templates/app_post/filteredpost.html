@@ -85,7 +85,7 @@
     <div class="container mt-3 card card-1 post" id="{{post.pk}}/{{post.slug}}">
         <div class="row">
             <div class="col-md-5">
-                <section class="image" style="background-image: url({{post.image.url}});"></section>
+                <section class="image" style="background-image: url({{post.imageURL|default_if_none:post.img_URL}});"></section>
             </div>
             <div class="col-md-5 post">
                 <h3>{{post.title}}</h3>

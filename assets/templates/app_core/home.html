@@ -49,6 +49,9 @@ BLOG{% endif %}{% endblock title %}
 {% endblock css %}
 
 {% block content %}
+{% for i in bar %}
+<h1>{{i}}</h1>
+{% endfor %}
 <div>
     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">

@@ -1,5 +1,5 @@
 {% extends '../base.html' %}
-
+{% load static %}
 <!-- title block -->
 {% block title %}All Draft{% endblock title %}
 <!-- title block end-->
@@ -99,14 +99,18 @@
             <div id="fullPost/{{post.pk}}/{{post.slug}}" class="container my-3 post card card-1">
                 <div class="row">
                     <div class="col-md-5">
-                        <section class="image" style="background-image: url({{post.image.url}});"></section>
+                        {% if post.image or post.img_URL %}
+                        <section class="image" style="background-image: url({{post.imageURL|default_if_none:post.img_URL}});"></section>
+                        {% else %}
+                        <section class="image" style="background-image: url({% static 'img/No_image_available.png' %});"></section>
+                        {% endif %}
                     </div>
                     <div class="col-md-5 post">
                         <h3>{{post.title}}</h3>
                         <h6>{{post.text | slice:":50"}}......</h6>
                         <a href="{% url 'post:fullPost' post.pk post.slug %}" class="mt-3">
                             <small class="inline-block"><b>...Read More</b></small>
-                        </a>
+                        </a> 
                         <hr>
                         <small>
                             {{post.created_date}} 

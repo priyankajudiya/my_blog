@@ -1,7 +1,8 @@
+from django.conf import settings
 from django.contrib.auth.models import User
 from app_user import forms
 from django.shortcuts import render,redirect,HttpResponse
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import SESSION_KEY, authenticate, login, logout
 from django.views.generic import View
 from django.contrib import messages
 from verify_email.email_handler import send_verification_email
@@ -98,3 +99,45 @@ def userFound(request):
         return HttpResponse('Username found')
     except:
         return HttpResponse('Username not found')
+
+############################################# Email Ajax
+from django.http import JsonResponse
+from django.core import serializers
+
+
+def emailCheck_db(request):
+    if request.method == 'POST':
+        emailFilter = User.objects.filter(email = request.POST.get('email'), username = 'priyank')
+        if bool(emailFilter):
+            email = 'true'
+        else:
+            email = 'false'
+    return JsonResponse({'email':email})
+
+
+####################################################### change password
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
+
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            del request.session['log_user']
+            logout(request)
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('index')
+        else:
+            messages.error(request, 'Please correct the error below.')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'app_user/change_password.html', {
+        'form': form
+    })
+
+############################################### passResetDone
+def resetDone(request):
+    messages.success(request, 'Your password was successfully updated!')
+    return redirect('user:login')

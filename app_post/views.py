@@ -3,25 +3,22 @@ from django.http import HttpResponseRedirect, request
 from django.shortcuts import get_object_or_404, redirect, render, HttpResponse
 from django.urls.base import reverse_lazy
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
-from app_post import forms
-
 from django.dispatch import receiver
-
-from app_user import models
+from app_post import forms
+from app_post import models
 # Create your views here.
 
-# Create Post
-
-
+################################################################# Create Post
 class createPost(CreateView):
     model = models.Post
     template_name = 'app_post/createpost.html'
-    fields = ['author','title', 'image', 'text']
+    fields = ['title','image','img_URL', 'text',]
 
     def form_invalid(self, form):
         return HttpResponse('Dont try to change HTML code')
 
     def form_valid(self, form):
+        print('form valid')
         form.instance.author = self.request.user
         return super().form_valid(form)
 
@@ -29,8 +26,7 @@ class createPost(CreateView):
         return super().dispatch(request)
 
 
-# List Post
-
+################################################################# List Post
 def author_list(model):
     posts = model.objects.filter(published_date__isnull=False)
     author_list = []
@@ -51,9 +47,7 @@ class viewPost(ListView):
         }
         return render(request, 'app_post/allpost.html', context)
 
-# Filter Post
-
-
+################################################################# Filter Post
 def filterPost(request, author):
     model = models.Post
     fposts = model.objects.filter(author__username=author)
@@ -68,21 +62,17 @@ def filterPost(request, author):
                    }
         return render(request, 'app_post/filteredpost.html', context)
 
-# Detail Post
-
-
+################################################################# Detail Post
 class fullPost(DetailView):
     model = models.Post
     template_name = 'app_post/fullpost.html'
     context_object_name = 'post'
 
-# Update Post
-
-
+################################################################# Update Post
 class postUpdate(UpdateView):
     model = models.Post
     template_name = 'app_post/createpost.html'
-    fields = ['title', 'image', 'text']
+    fields = ['title', 'image', 'img_URL','text']
     context_object_name = 'post'
 
     def dispatch(self, request, *args, **kwargs):
@@ -92,9 +82,7 @@ class postUpdate(UpdateView):
             return HttpResponse('Not Authorized to update other post')
         return super(postUpdate, self).dispatch(request, *args, **kwargs)
 
-# Delete Post
-
-
+################################################################# Delete Post
 class postDelete(DeleteView):
     model = models.Post
     # template_name = 'app_post/post_confirm_delete.html'
@@ -112,9 +100,7 @@ class postDelete(DeleteView):
             return HttpResponse('Not authorized to delete this posts')
         return super(postDelete, self).dispatch(request, *args, **kwargs)
 
-# User All Post
-
-
+################################################################# User All Post
 class my_post(ListView):
     model = models.Post
 
@@ -127,9 +113,7 @@ class my_post(ListView):
         else:
             return render(request, 'app_post/my_post.html', {'objects': objects})
 
-# Not Published User All Post
-
-
+################################################################# Not Published User All Post
 def notPublishd(request):
     author = None
     if request.user.is_authenticated:
@@ -142,9 +126,7 @@ def notPublishd(request):
                    }
     return render(request, 'app_post/my_post.html', context)
 
-# Published User All Post
-
-
+################################################################# Published User All Post
 def Publishd(request):
     author = None
     if request.user.is_authenticated:
@@ -157,9 +139,7 @@ def Publishd(request):
                    }
     return render(request, 'app_post/my_post.html', context)
 
-# Publish or Drafts Post
-
-
+################################################################# Publish or Drafts Post
 def publish_post(request, pk, slug):
     model = models.Post
     post = model.objects.get(pk=pk)
@@ -179,15 +159,10 @@ def publish_post(request, pk, slug):
         return redirect('post:all_publish_post')
 
 
-# Add Comments
-
+################################################################# Add Comments
 def addComment(request, pk):
     if request.method == 'POST':
         form = forms.commentForm(request.POST)
-        form.name = request.POST.get('name')
-        form.comment = request.POST.get('comment')
-        form.email = request.POST.get('email')
-
         if form.is_valid():
             instanse = form.save(commit=False)
             instanse.post = get_object_or_404(models.Post, pk=pk)
